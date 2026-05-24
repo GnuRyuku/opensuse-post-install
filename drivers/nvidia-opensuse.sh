@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# el script fue verificado y modificado por una IA (especificamente por Cloude Haiku, 
+# el script fue verificado y modificado por una IA (especificamente por Cloude Haiku,
 # pero con comportamiento de tsundere de secundaria) si algo no cuadra, por fovor, dimelo
 
 # Verificar sudo
@@ -41,37 +41,31 @@ log_step "Iniciando instalación de drivers NVIDIA en openSUSE"
 
 # Agregar repositorios
 log_step "Añadiendo repositorios NVIDIA y CUDA"
-zypper install -y openSUSE-repos-Tumbleweed-NVIDIA
-zypper addrepo https://developer.download.nvidia.com/compute/cuda/repos/suse16/x86_64/ cuda
+    zypper install -y openSUSE-repos-Tumbleweed-NVIDIA
+    zypper addrepo https://developer.download.nvidia.com/compute/cuda/repos/suse16/x86_64/ cuda
 handle_error "Fallo al agregar repositorios"
 
 # Instalar drivers
 log_step "Instalando drivers NVIDIA"
-zypper in -y --auto-agree-with-licenses \
-    nvidia-open-driver-G07-signed-kmp-meta \
-    nvidia-driver-G07 \
-    nvidia-compute-utils-G07 \
-    nvidia-video-G07 \
-    nvidia-settings
+    zypper in -y --auto-agree-with-licenses \
+        nvidia-open-driver-G07-signed-kmp-meta \
+        nvidia-driver-G07 \
+        nvidia-compute-utils-G07 \
+        nvidia-video-G07 \
+        nvidia-settings
 handle_error "Fallo en la instalación de drivers"
 
 # CUDA Toolkit (con validación)
 read -p "¿Instalar CUDA Toolkit? (s/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Ss]$ ]]; then
-    read -p "Introduce la versión de CUDA (ej: 12.4): " cuda_version
-    if [ -z "$cuda_version" ]; then
-        color_echo "red" "Versión no válida"
-        exit 1
-    fi
-    log_step "Instalando CUDA Toolkit $cuda_version"
-    zypper in -y cuda-toolkit-${cuda_version}
-    handle_error "Fallo en la instalación de CUDA Toolkit"
+    chmod +x ./drivers/cuda-opensuse.sh
+    ./drivers/cuda-opensuse.sh
 fi
 
 # Regenerar dracut
 log_step "Regenerando dracut"
-dracut -f --regenerate-all
+    dracut -f --regenerate-all
 handle_error "Fallo al regenerar dracut"
 
 # Reinicio
